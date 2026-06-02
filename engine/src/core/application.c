@@ -2,7 +2,8 @@
 #include "game_types.h"
 
 #include "logger.h"
-#include <platform/platform.h>
+#include "platform/platform.h"
+#include "core/smemory.h"
 
 typedef struct application_state {
     game* game_inst;
@@ -19,7 +20,7 @@ static application_state app_state;
 
 b8 application_create(game* game_inst) {
     if (initialized) {
-        KERROR("Application_state cannot run more than once.");
+        SERROR("Application_state cannot run more than once.");
         return FALSE;
     }
 
@@ -28,13 +29,13 @@ b8 application_create(game* game_inst) {
     // Initialize our subsystems.
     initialize_logging();
 
-    KFATAL("A test message: %f", 3.14f);
-    KERROR("Error test message: %f", 3.14f);
-    KWARN("Warn test message: %f", 3.14f);
-    KINFO("Info test message: %f", 3.14f);
-    KDEBUG("Debug test message: %f", 3.14f);
-    KTRACE("Trace test message: %f", 3.14f);
-    // KASSERT(1 == 0);
+    SFATAL("A test message: %f", 3.14f);
+    SERROR("Error test message: %f", 3.14f);
+    SWARN("Warn test message: %f", 3.14f);
+    SINFO("Info test message: %f", 3.14f);
+    SDEBUG("Debug test message: %f", 3.14f);
+    STRACE("Trace test message: %f", 3.14f);
+    // SASSERT(1 == 0);
 
     app_state.is_running = TRUE;
     app_state.is_suspended = FALSE;
@@ -50,7 +51,7 @@ b8 application_create(game* game_inst) {
 
     // Initialize the game
     if (!app_state.game_inst->initialize(app_state.game_inst)) {
-        KFATAL("Game failed to initialize!");
+        SFATAL("Game failed to initialize!");
         return FALSE;
     }
 
@@ -62,6 +63,8 @@ b8 application_create(game* game_inst) {
 }
 
 b8 application_run() {
+    SINFO(get_memory_usage_str());
+
     while (app_state.is_running) {
         if (!platform_pump_messages(&app_state.platform)) {
             app_state.is_running = FALSE;
@@ -70,13 +73,13 @@ b8 application_run() {
 
         if (!app_state.is_suspended) {
             if(!app_state.game_inst->update(app_state.game_inst, (f32)0)) {
-                KFATAL("Game update failed, shutting down.");
+                SFATAL("Game update failed, shutting down.");
                 app_state.is_running = FALSE;
                 break;
             }
 
             if(!app_state.game_inst->render(app_state.game_inst, (f32)0)) {
-                KFATAL("Game render failed, shutting down.");
+                SFATAL("Game render failed, shutting down.");
                 app_state.is_running = FALSE;
                 break;
             }

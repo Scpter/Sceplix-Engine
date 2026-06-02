@@ -3,7 +3,7 @@
 #include <core/logger.h>
 
 b8 game_initialize(game* game_inst) {
-    KDEBUG("game_initialize was callled!");
+    SDEBUG("game_initialize was callled!");
     return TRUE;
 }
 

@@ -1,7 +1,7 @@
 #include "platform/platform.h"
 
 // Windows platform layer
-#if KPLATFORM_WINDOWS
+#if SPLATFORM_WINDOWS
 
 #include <Windows.h>
 #include <windowsx.h> // parameter input extraction
@@ -90,7 +90,7 @@ b8 platform_startup(
     if (handle == 0) {
         MessageBoxA(NULL, "Window creation failed!", "Error!", MB_ICONEXCLAMATION | MB_OK);
         
-        KFATAL("Window creation failed!");
+        SFATAL("Window creation failed!");
         return FALSE;
     } else {
         state->hwnd = handle;
@@ -244,4 +244,4 @@ LRESULT CALLBACK win32_process_message(HWND hwnd, u32 msg, WPARAM w_param, LPARA
     return DefWindowProcA(hwnd, msg, w_param, l_param);
 }
 
-#endif // KPLATFORM WINDOWS
+#endif // SPLATFORM WINDOWS
